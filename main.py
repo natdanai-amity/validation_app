@@ -80,9 +80,15 @@ if secret_key:
 
                 st.write(df)
                 print("check 1")
-                accuracy = df['graded_output'].value_counts(normalize=True)['CORRECT']
+                accuracy = df['graded_output'].value_counts()
+                if "CORRECT" in accuracy:
+                    percentage = (accuracy["CORRECT"] / df.shape[0]) * 100
+                    st.text(f"your answer is {percentage}% correct")
+                else:
+                    percentage = 0
+                    st.text(f"your answer is {percentage}% correct")
                 print("check 2")
-                st.text(f"The Accuracy of LLMs : {accuracy}")
+                # st.text(f"The Accuracy of LLMs : {accuracy}")
 
                 excel_file = io.BytesIO()
                 # Create an Excel writer object
