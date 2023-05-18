@@ -14,6 +14,8 @@ from utils.template import prompt_template
 import streamlit as st
 import pandas as pd
 
+from langchain.chat_models import ChatOpenAI
+
 st.title('Amity Validation Platform')
 
 secret_key = st.text_input("Please enter your OpenAI api key")
@@ -30,7 +32,9 @@ if secret_key:
 
     embeddings = OpenAIEmbeddings()
 
-    llm = OpenAI(temperature=0, model_name='text-davinci-003',max_tokens=500)
+    # llm = OpenAI(temperature=0, model_name='text-davinci-003',max_tokens=500)
+
+    llm = ChatOpenAI(temperature=0, model_name='gpt-3.5-turbo',max_tokens=1000)
 
     pinecone.init(
         api_key=PINECONE_API_KEY,  # find at app.pinecone.io
@@ -62,7 +66,7 @@ if secret_key:
                 st.write('Button clicked!')
                 st.info('Performing some action...')
                 for i,j in enumerate(data):
-                    docs = db.similarity_search(j['question'],k=1)
+                    docs = db.similarity_search(j['question'],k=3)
                     data[i]['CONTEXT'] = docs
 
                 prediction = chain.apply(data)
@@ -72,10 +76,11 @@ if secret_key:
                 # Display graded outputs
                 graded_texts = [output["text"] for output in graded_outputs]
                 df['graded_output'] = graded_texts
+                df['gpt-answer'] = prediction
 
                 st.write(df)
                 print("check 1")
-                accuracy = df['graded_output'].value_counts(normalize=True)[' CORRECT']
+                accuracy = df['graded_output'].value_counts(normalize=True)['CORRECT']
                 print("check 2")
                 st.text(f"The Accuracy of LLMs : {accuracy}")
 
