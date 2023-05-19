@@ -18,7 +18,8 @@ from langchain.chat_models import ChatOpenAI
 
 st.title('Amity Validation Platform')
 
-st.write(template)
+with st.expander("Prompt"):
+    st.write(template)
 
 secret_key = st.text_input("Please enter your OpenAI api key",type='password')
 
