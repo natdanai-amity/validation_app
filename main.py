@@ -13,6 +13,7 @@ import pinecone
 from utils.template import prompt_template,template
 import streamlit as st
 import pandas as pd
+import evaluate
 
 from langchain.chat_models import ChatOpenAI
 
@@ -32,6 +33,8 @@ if secret_key:
     PINECONE_API_KEY = '9ffa659d-198e-4658-b839-efe1a9c801a6'
 
     PINECONE_ENV = 'asia-northeast1-gcp'
+
+    squad_metric = evaluate.load("squad")
 
     embeddings = OpenAIEmbeddings()
 
@@ -69,7 +72,7 @@ if secret_key:
                 st.write('Button clicked!')
                 st.info('Performing some action...')
                 for i,j in enumerate(data):
-                    docs = db.similarity_search(j['question'],k=3)
+                    docs = db.similarity_search(j['question'],k=4)
                     data[i]['CONTEXT'] = docs
 
                 prediction = chain.apply(data)
@@ -79,10 +82,20 @@ if secret_key:
                 # Display graded outputs
                 graded_texts = [output["text"] for output in graded_outputs]
                 df['graded_output'] = graded_texts
-                df['gpt-answer'] = prediction
-
+                df['gpt-answer'] = [i['text'] for i in prediction]
+                print("Hello")
                 st.write(df)
-                print("check 1")
+
+                # make prediction from for evaluation
+                # Some data munging to get the examples in the right format
+                results = []
+                for i in range(len(df)):
+                    references = [{'answers': {'answer_start': [0], 'text': [df['answer'][i]]}, 'id': '1'}]
+                    gpt_gen = [{'prediction_text': df['gpt-answer'][i], 'id': '1'}]
+                    results.append(squad_metric.compute(predictions=gpt_gen, references=references)['f1'])
+                print("Hello 2")
+                df['confident'] = results
+                ##### end of chane ######
                 accuracy = df['graded_output'].value_counts()
                 if "CORRECT" in accuracy:
                     percentage = (accuracy["CORRECT"] / df.shape[0]) * 100
