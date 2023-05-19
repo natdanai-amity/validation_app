@@ -10,7 +10,7 @@ from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.evaluation.qa import QAEvalChain
 from langchain.embeddings import OpenAIEmbeddings
 import pinecone
-from utils.template import prompt_template
+from utils.template import prompt_template,template
 import streamlit as st
 import pandas as pd
 
@@ -18,7 +18,9 @@ from langchain.chat_models import ChatOpenAI
 
 st.title('Amity Validation Platform')
 
-secret_key = st.text_input("Please enter your OpenAI api key")
+st.write(template)
+
+secret_key = st.text_input("Please enter your OpenAI api key",type='password')
 
 if secret_key:
 
