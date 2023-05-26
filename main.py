@@ -46,7 +46,7 @@ if secret_key:
         api_key=PINECONE_API_KEY,  # find at app.pinecone.io
         environment=PINECONE_ENV  # next to api key in console
     )
-    index_name = "bank-live-promo"
+    index_name = "bank-promotion"
 
     db = Pinecone.from_existing_index(embedding=embeddings,index_name=index_name)
     chain = LLMChain(llm=llm,prompt=prompt_template)
