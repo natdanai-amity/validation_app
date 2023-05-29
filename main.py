@@ -17,7 +17,7 @@ import evaluate
 
 from langchain.chat_models import ChatOpenAI
 
-st.title('Amity Validation Platform')
+st.title('Validation Platform')
 
 with st.expander("Prompt"):
     st.write(template)
