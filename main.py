@@ -72,7 +72,7 @@ if secret_key:
                 st.write('Button clicked!')
                 st.info('Performing some action...')
                 for i,j in enumerate(data):
-                    docs = db.similarity_search(j['question'],k=3)
+                    docs = db.similarity_search(j['question'],k=2)
                     data[i]['CONTEXT'] = docs
 
                 prediction = chain.apply(data)

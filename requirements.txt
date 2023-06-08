@@ -7,3 +7,8 @@ pytesseract
 tiktoken
 streamlit
 evaluate
+pythainlp
+transformers
+fairseq
+sacremoses
+sentencepiece
